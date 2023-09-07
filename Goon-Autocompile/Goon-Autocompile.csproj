@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>Goon.Autocompile</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>Goon.Autocompile</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="NWN.Anvil" Version="8193.35.1" />
+      <PackageReference Include="NWN.Native" Version="8193.35.6" />
+    </ItemGroup>
+
+</Project>
