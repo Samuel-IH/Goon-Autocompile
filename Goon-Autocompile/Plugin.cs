@@ -23,6 +23,10 @@ public class Plugin
         var compiled = Directory.GetDirectories("/nwn/run").Where(d => d.StartsWith(compiledPrefix))
             .Select(d => int.Parse(d.Substring(compiledPrefix.Length))).Max().ToString();
         compiled = compiledPrefix + compiled + "/";
+        
+        // test
+        compiled = "/nwn/home/development";
+        if (!Directory.Exists(compiled)) Directory.CreateDirectory(compiled);
 
         if (!Directory.Exists(cache)) Directory.CreateDirectory(cache);
         var compiler = NWNXLib.VirtualMachine().m_pJitCompiler;
