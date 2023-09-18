@@ -13,19 +13,25 @@ public class Plugin
 {
     private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
+    // public static string GetScriptPath(string scriptName)
+    // {
+    //     string compiledPrefix = "/nwn/run/currentgame.";
+    //
+    //     // find all directories that start with compiledPrefix, and split off the number that they end with. Then
+    //     // find the directory with the highest number
+    //     var compiled = Directory.GetDirectories("/nwn/run").Where(d => d.StartsWith(compiledPrefix))
+    //         .Select(d => int.Parse(d.Substring(compiledPrefix.Length))).Max().ToString();
+    //     compiled = compiledPrefix + compiled + "/";
+    //     return compiled;
+    // }
+    
     public Plugin(ResourceManager resMan)
     {
         const string cache = "/nwn/run/_nss-cache/";
-        string compiledPrefix = "/nwn/run/currentgame.";
-
-        // find all directories that start with compiledPrefix, and split off the number that they end with. Then
-        // find the directory with the highest number
-        var compiled = Directory.GetDirectories("/nwn/run").Where(d => d.StartsWith(compiledPrefix))
-            .Select(d => int.Parse(d.Substring(compiledPrefix.Length))).Max().ToString();
-        compiled = compiledPrefix + compiled + "/";
+        const string devDirectory = "/nwn/home/development/";
         
-        // test
-        compiled = "/nwn/home/development";
+        // string compiled = GetScriptPath(scriptName);
+        string compiled = devDirectory;
         if (!Directory.Exists(compiled)) Directory.CreateDirectory(compiled);
 
         if (!Directory.Exists(cache)) Directory.CreateDirectory(cache);
