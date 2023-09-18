@@ -13,34 +13,42 @@ public class Plugin
 {
     private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
+    // public static string GetScriptPath(string scriptName)
+    // {
+    //     string compiledPrefix = "/nwn/run/currentgame.";
+    //
+    //     // find all directories that start with compiledPrefix, and split off the number that they end with. Then
+    //     // find the directory with the highest number
+    //     var compiled = Directory.GetDirectories("/nwn/run").Where(d => d.StartsWith(compiledPrefix))
+    //         .Select(d => int.Parse(d.Substring(compiledPrefix.Length))).Max().ToString();
+    //     compiled = compiledPrefix + compiled + "/";
+    //     return compiled;
+    // }
+    
     public Plugin(ResourceManager resMan)
     {
         const string cache = "/nwn/run/_nss-cache/";
-        string compiledPrefix = "/nwn/run/currentgame.";
-
-        // find all directories that start with compiledPrefix, and split off the number that they end with. Then
-        // find the directory with the highest number
-        var compiled = Directory.GetDirectories("/nwn/run").Where(d => d.StartsWith(compiledPrefix))
-            .Select(d => int.Parse(d.Substring(compiledPrefix.Length))).Max().ToString();
-        compiled = compiledPrefix + compiled + "/";
+        const string devDirectory = "/nwn/home/development/";
+        
+        // string compiled = GetScriptPath(scriptName);
+        string compiled = devDirectory;
+        if (!Directory.Exists(compiled)) Directory.CreateDirectory(compiled);
 
         if (!Directory.Exists(cache)) Directory.CreateDirectory(cache);
         var compiler = NWNXLib.VirtualMachine().m_pJitCompiler;
-        
-        var compiledPath = "";
-        CExoString scriptName = null!;
+
         var copyTasks = new List<Task>();
 
         foreach (var s in resMan.FindResourcesOfType(ResRefType.NSS))
         {
-            scriptName = s.ToExoString();
+            var scriptName = s.ToExoString();
             if (resMan.GetNSSContents(scriptName) is not string contents) continue;
             
             using var sha1 = SHA1.Create();
             var hash = Convert.ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(s + contents)));
 
             var cachedPath = Path.Combine(cache, $"{hash}");
-            compiledPath = Path.Combine(compiled, $"{s}.ncs");
+            var compiledPath = Path.Combine(compiled, $"{s}.ncs");
 
             if (File.Exists(cachedPath))
             {
@@ -91,8 +99,6 @@ public class Plugin
         compiler.SetCompileSymbolicOutput(0);
         compiler.SetGenerateDebuggerOutput(0);
         compiler.SetCompileConditionalFile(0);
-        if (File.Exists(compiledPath)) File.Delete(compiledPath);
-        compiler.CompileFile(scriptName);
 
         Log.Info("Done compiling scripts");
     }
