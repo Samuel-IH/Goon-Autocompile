@@ -36,21 +36,19 @@ public class Plugin
 
         if (!Directory.Exists(cache)) Directory.CreateDirectory(cache);
         var compiler = NWNXLib.VirtualMachine().m_pJitCompiler;
-        
-        var compiledPath = "";
-        CExoString scriptName = null!;
+
         var copyTasks = new List<Task>();
 
         foreach (var s in resMan.FindResourcesOfType(ResRefType.NSS))
         {
-            scriptName = s.ToExoString();
+            var scriptName = s.ToExoString();
             if (resMan.GetNSSContents(scriptName) is not string contents) continue;
             
             using var sha1 = SHA1.Create();
             var hash = Convert.ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(s + contents)));
 
             var cachedPath = Path.Combine(cache, $"{hash}");
-            compiledPath = Path.Combine(compiled, $"{s}.ncs");
+            var compiledPath = Path.Combine(compiled, $"{s}.ncs");
 
             if (File.Exists(cachedPath))
             {
@@ -101,8 +99,6 @@ public class Plugin
         compiler.SetCompileSymbolicOutput(0);
         compiler.SetGenerateDebuggerOutput(0);
         compiler.SetCompileConditionalFile(0);
-        if (File.Exists(compiledPath)) File.Delete(compiledPath);
-        compiler.CompileFile(scriptName);
 
         Log.Info("Done compiling scripts");
     }
